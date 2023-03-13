@@ -1,4 +1,4 @@
-# C++/Python Base
+# C++ Base
 
 This folder contains the C++ base exercises.
 
