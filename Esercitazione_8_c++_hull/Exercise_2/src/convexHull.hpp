@@ -7,14 +7,17 @@
 #include "map"
 #include "sorting.hpp"
 
-#define MAX(x,y) x > y ? x : y
-#define NORM_SQUARED(x,y) x * x + y * y
-
 using namespace std;
 using namespace Eigen;
 
 namespace ConvexHullLibrary
 {
+
+  constexpr double max_tolerance(const double& x, const double& y)
+  {
+    return x > y ? x : y;
+  }
+
   struct Point
   {
       double x;
@@ -25,8 +28,8 @@ namespace ConvexHullLibrary
       Point *prec = nullptr;
 
       static constexpr double geometricTol = 1.0e-12;
-      static constexpr double geometricTol_Squared = MAX(Point::geometricTol * Point::geometricTol,
-                                                         numeric_limits<double>::epsilon());
+      static constexpr double geometricTol_Squared = max_tolerance(Point::geometricTol * Point::geometricTol,
+                                                                   numeric_limits<double>::epsilon());
 
       Point(const double& x,
             const double& y,
@@ -41,13 +44,16 @@ namespace ConvexHullLibrary
       }
   };
 
-
+  inline double normSquared(const double& x, const double& y)
+  {
+    return x * x + y * y;
+  }
 
   inline bool operator==(const Point& p1, const Point& p2)
   {
-    return (NORM_SQUARED(p1.x - p2.x, p1.y - p2.y) <=
+    return (normSquared(p1.x - p2.x, p1.y - p2.y) <=
             Point::geometricTol * Point::geometricTol *
-            max(NORM_SQUARED(p1.x, p1.y), NORM_SQUARED(p2.x, p2.y)));
+            max(normSquared(p1.x, p1.y), normSquared(p2.x, p2.y)));
   }
 
   inline bool operator!=(const Point& p1, const Point& p2)
